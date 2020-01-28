@@ -12,6 +12,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
@@ -161,20 +162,23 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             } else if (arr.get(i).equals(")") && !stack.empty()) {
                 stack.pop();
             }
-            if(i>0){
-                if(!isOperator(arr.get(i))&&!isBow(arr.get(i))&&arr.get(i-1).equals(")"))
+            if (i > 0) {
+                if (!isOperator(arr.get(i)) && !isBow(arr.get(i)) && arr.get(i - 1).equals(")"))
                     return false;
             }
             if (i + 1 < siz) {
                 if ((isOperator(arr.get(i)) && isOperator(arr.get(i + 1)) && !arr.get(i + 1).equals("¬"))
                         || (isOperator(arr.get(i)) && arr.get(i + 1).equals(")") && !arr.get(i).equals("¬"))
-                        || (isBow(arr.get(i)) && isOperator(arr.get(i + 1)) && !arr.get(i).equals(")"))
+                        || (isBow(arr.get(i)) && isOperator(arr.get(i + 1))&&!arr.get(i+1).equals("¬") && !arr.get(i).equals(")"))
                         || (isBow(arr.get(i)) && isBow(arr.get(i + 1)))
                         || arr.get(i).equals(")") && arr.get(i + 1).equals("¬")
                         || !isOperator(arr.get(i)) && !isBow(arr.get(i)) && arr.get(i + 1).equals("¬")
-                        || !isOperator(arr.get(i))&&!isBow(arr.get(i))&&arr.get(i+1).equals("("))
+                        || !isOperator(arr.get(i)) && !isBow(arr.get(i)) && arr.get(i + 1).equals("(")
+                        || isOperator(arr.get(i))&&arr.get(i+1).equals(")")
+                )
 
                 {
+
                     return false;
 
                 }
@@ -197,6 +201,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void infixToprefix(ArrayList<String> arr) {
+
         Stack<String> operators = new Stack<>();
         int siz = arr.size();
         for (int i = 0; i < siz; i++) {
@@ -249,7 +254,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             return true;
         if (s.equals("^") && (peek.equals("∧") || peek.equals("∨")))
             return true;
-        if(s.equals("∧")&&peek.equals("∨"))
+        if (s.equals("∧") && peek.equals("∨"))
             return true;
         if (s.equals("¬") && peek.equals("¬"))
             return true;
@@ -264,12 +269,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void rawResult() {
-
-
         Stack<Boolean> res = new Stack<>();
+        SingleTone.setLetters(letters);
         int lastNumber = (int) Math.pow(2, letters.size());
-        ArrayList<TruthTableModel> dataShow = new ArrayList<>();
+//        ArrayList<TruthTableModel> dataShow = new ArrayList<>();
+        ArrayList<String> DecNumbers = new ArrayList<>();
+        ArrayList<String> raw = new ArrayList<>();
         for (int i = 0; i < lastNumber; i++) {
+            DecNumbers.add(String.valueOf(i));
             Boolean[] binaryRaw = new Boolean[letters.size()];
             Arrays.fill(binaryRaw, Boolean.FALSE);
             int fromEndToStart = binaryRaw.length - 1;
@@ -325,18 +332,24 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     else
                         res.push(Boolean.FALSE);
                 }
-
             }
-            TruthTableModel mod = new TruthTableModel(i, binaryRaw, res.peek());
-            dataShow.add(mod);
+            for (int raww = 0; raww < binaryRaw.length; raww++) {
+                if (binaryRaw[raww])
+                    raw.add("1");
+                else
+                    raw.add("0");
+            }
+            if (res.peek())
+                raw.add("1");
+            else
+                raw.add("0");
+            //TruthTableModel mod = new TruthTableModel(i, binaryRaw, res.peek());
+            //dataShow.add(mod);
             res.pop();
         }
-
+        SingleTone.setNum(DecNumbers);
+        SingleTone.setRow(raw);
         Intent intent = new Intent(MainActivity.this, TruthTableAnd_kMapActivity.class);
-        Gson gson = new Gson();
-        String jsonString = gson.toJson(dataShow);
-        intent.putExtra("dataRows", jsonString);
-        intent.putExtra("letters", letters);
         startActivity(intent);
     }
 
@@ -375,8 +388,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     formula.setError("Wrong Syntax!");
                 }
                 mProgress.dismiss();
-            }
-            else
+            } else
                 formula.setError("Empty!");
         }
     }

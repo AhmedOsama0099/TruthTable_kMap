@@ -1,6 +1,11 @@
 package com.example.truthtablek_map;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.StaggeredGridLayoutManager;
+
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -10,17 +15,15 @@ import android.widget.LinearLayout;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 public class TruthTableAnd_kMapActivity extends AppCompatActivity {
-    private ArrayList<TruthTableModel> dataRows=new ArrayList<>();
-    private ArrayList<String> letters=new ArrayList<>();
-    private TableLayout table;
-    private LinearLayout header_layout;
-
+    private RecyclerView viewRows,viewHeader,viewNumbers;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -29,83 +32,27 @@ public class TruthTableAnd_kMapActivity extends AppCompatActivity {
         setDataToTable();
 
 
+
     }
     private void setDataToTable() {
-        table.removeAllViews();
+        ArrayList<String>header=SingleTone.getLetters();
+        header.add("Result");
+        LettersAdapter lettersAdapter=new LettersAdapter(header,this);
+        viewHeader.setHasFixedSize(true);
+        viewHeader.setLayoutManager(new LinearLayoutManager(this,RecyclerView.HORIZONTAL,false));
+        viewHeader.setAdapter(lettersAdapter);
 
-        for(int i=0;i<letters.size();i++){
-            TextView head = new TextView(TruthTableAnd_kMapActivity.this);
-            head.setLayoutParams(new TableRow.LayoutParams(230,TableRow.LayoutParams.WRAP_CONTENT));
-            head.setTextSize(22);
-            head.setMaxLines(1);
-            head.setEllipsize(TextUtils.TruncateAt.END);
-            head.setSingleLine(true);
-            head.setGravity(Gravity.CENTER);
-            head.setText(letters.get(i));
-            head.setTextColor(Color.parseColor("#ffffff"));
-            header_layout.addView(head);
-        }
-        TextView head = new TextView(TruthTableAnd_kMapActivity.this);
-        head.setLayoutParams(new TableRow.LayoutParams(230,TableRow.LayoutParams.WRAP_CONTENT));
-        head.setTextSize(22);
-        head.setMaxLines(1);
-        head.setEllipsize(TextUtils.TruncateAt.END);
-        head.setSingleLine(true);
-        head.setText("Result");
-        head.setGravity(Gravity.CENTER);
-        head.setTextColor(Color.parseColor("#ffffff"));
+        CellAdapter cellAdapter=new CellAdapter(SingleTone.getRow(),this);
+        viewRows.setHasFixedSize(true);
+        viewRows.setLayoutManager(new GridLayoutManager(this,header.size()));
+        viewRows.setAdapter(cellAdapter);
 
-        header_layout.addView(head);
-
-        for(int i=0;i<dataRows.size();i++){
-            TableRow row=new TableRow(TruthTableAnd_kMapActivity.this);
-            row.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT));
-            Boolean []Bin=dataRows.get(i).getBinNum();
-            for (int j = 0; j < Bin.length; j++) {
-                TextView edit = new TextView(TruthTableAnd_kMapActivity.this);
-                edit.setLayoutParams(new TableRow.LayoutParams(230,TableRow.LayoutParams.WRAP_CONTENT));
-                edit.setTextSize(22);
-                edit.setMaxLines(1);
-                edit.setEllipsize(TextUtils.TruncateAt.END);
-                edit.setSingleLine(true);
-                edit.setGravity(Gravity.CENTER);
-                if(Bin[j])
-                    edit.setText("1");
-                else
-                    edit.setText("0");
-                edit.setKeyListener(null);
-                row.addView(edit);
-                if(j==Bin.length-1)
-                {
-                    TextView editt = new TextView(TruthTableAnd_kMapActivity.this);
-                    editt.setLayoutParams(new TableRow.LayoutParams(230,TableRow.LayoutParams.WRAP_CONTENT));
-                    editt.setTextSize(22);
-                    editt.setMaxLines(1);
-                    editt.setEllipsize(TextUtils.TruncateAt.END);
-                    editt.setSingleLine(true);
-                    editt.setGravity(Gravity.CENTER);
-                    if(dataRows.get(i).getRes()){
-                        editt.setText("1");
-                    }
-                    else
-                        editt.setText("0");
-                    row.addView(editt);
-                }
-            }
-            table.addView(row);
-        }
     }
 
     private void intializeDate() {
-        Intent intent=getIntent();
-        Bundle bundle = intent.getExtras();
-        String jsonString = bundle.getString("dataRows");
-        Gson gson = new Gson();
-        Type listOfdoctorType = new TypeToken<List<TruthTableModel>>() {}.getType();
-        dataRows = gson.fromJson(jsonString,listOfdoctorType );
-        letters = intent.getStringArrayListExtra("letters");
-        table=findViewById(R.id.truthTable);
-        header_layout=findViewById(R.id.header);
+        viewRows=findViewById(R.id.rows);
+        viewHeader=findViewById(R.id.header);
+//        viewNumbers=findViewById(R.id.first_column);
     }
 
     @Override
@@ -113,4 +60,5 @@ public class TruthTableAnd_kMapActivity extends AppCompatActivity {
         super.onBackPressed();
         finish();
     }
+
 }

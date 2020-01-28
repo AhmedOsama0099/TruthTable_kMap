@@ -26,7 +26,9 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test:runner:1.2.0'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
+    implementation 'androidx.recyclerview:recyclerview:1.1.0-alpha06'
     implementation 'de.codecrafters.tableview:tableview:2.0.0'
     implementation 'com.google.code.gson:gson:2.7'
+
 //    implementation 'com.evrencoskun.library:tableview:0.8.8'
 }
