@@ -23,7 +23,7 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 public class TruthTableAnd_kMapActivity extends AppCompatActivity {
-    private RecyclerView viewRows,viewHeader,viewNumbers;
+    private RecyclerView viewRows,viewHeader;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
