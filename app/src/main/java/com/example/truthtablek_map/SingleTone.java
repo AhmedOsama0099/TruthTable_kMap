@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 public class SingleTone {
     public static ArrayList<String>letters;
-    public static ArrayList<String>row;
+    public static ArrayList<ArrayList<String>>tableData;
     public static ArrayList<String>num;
 
     public static ArrayList<String> getNum() {
@@ -21,8 +21,8 @@ public class SingleTone {
         SingleTone.letters = letters;
     }
 
-    public static void setRow(ArrayList<String> row) {
-        SingleTone.row = row;
+    public static void setTableData() {
+        SingleTone.tableData = new ArrayList<>();
     }
 
 
@@ -31,9 +31,6 @@ public class SingleTone {
         return letters;
     }
 
-    public static ArrayList<String> getRow() {
-        return row;
-    }
 
 
 }

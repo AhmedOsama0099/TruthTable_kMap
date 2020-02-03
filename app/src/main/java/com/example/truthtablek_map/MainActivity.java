@@ -47,31 +47,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         xor.setOnClickListener(this);
         generate.setOnClickListener(this);
         mProgress = new ProgressDialog(this);
-        /*formula.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                String form = formula.getText().toString().trim();
-                if (!form.isEmpty()) {
-                    if (back.length() < form.length()) {//added a char
-
-
-                    } else {//removed a char
-
-                    }
-                }
-                back = formula.getText().toString().trim();
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-
-            }
-        });*/
     }
 
     Boolean isBow(Character x) {
@@ -272,10 +247,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         Stack<Boolean> res = new Stack<>();
         SingleTone.setLetters(letters);
         int lastNumber = (int) Math.pow(2, letters.size());
-//        ArrayList<TruthTableModel> dataShow = new ArrayList<>();
         ArrayList<String> DecNumbers = new ArrayList<>();
-        ArrayList<String> raw = new ArrayList<>();
+        ArrayList<String> raw;
+        SingleTone.setTableData();
         for (int i = 0; i < lastNumber; i++) {
+            raw = new ArrayList<>();
             DecNumbers.add(String.valueOf(i));
             Boolean[] binaryRaw = new Boolean[letters.size()];
             Arrays.fill(binaryRaw, Boolean.FALSE);
@@ -343,12 +319,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 raw.add("1");
             else
                 raw.add("0");
-            //TruthTableModel mod = new TruthTableModel(i, binaryRaw, res.peek());
-            //dataShow.add(mod);
+            SingleTone.tableData.add(raw);
             res.pop();
         }
         SingleTone.setNum(DecNumbers);
-        SingleTone.setRow(raw);
         Intent intent = new Intent(MainActivity.this, TruthTableAnd_kMapActivity.class);
         startActivity(intent);
     }
