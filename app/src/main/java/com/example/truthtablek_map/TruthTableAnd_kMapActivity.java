@@ -28,7 +28,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class TruthTableAnd_kMapActivity extends AppCompatActivity {
-    private RecyclerView tableData;
+    private RecyclerView tableData,numColumn;
     private LinearLayout header;
 
     @Override
@@ -37,8 +37,35 @@ public class TruthTableAnd_kMapActivity extends AppCompatActivity {
         setContentView(R.layout.activity_truth_table_and_k_map);
         intializeDate();
         setDataToTable();
+        synchronizeScrolling();
     }
-
+    private void synchronizeScrolling(){
+        final RecyclerView.OnScrollListener[] scrollListeners = new RecyclerView.OnScrollListener[2];
+        scrollListeners[0] = new RecyclerView.OnScrollListener( )
+        {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy)
+            {
+                super.onScrolled(recyclerView, dx, dy);
+                numColumn.removeOnScrollListener(scrollListeners[1]);
+                numColumn.scrollBy(dx, dy);
+                numColumn.addOnScrollListener(scrollListeners[1]);
+            }
+        };
+        scrollListeners[1] = new RecyclerView.OnScrollListener( )
+        {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy)
+            {
+                super.onScrolled(recyclerView, dx, dy);
+                tableData.removeOnScrollListener(scrollListeners[0]);
+                tableData.scrollBy(dx, dy);
+                tableData.addOnScrollListener(scrollListeners[0]);
+            }
+        };
+        tableData.addOnScrollListener(scrollListeners[0]);
+        numColumn.addOnScrollListener(scrollListeners[1]);
+    }
     private void setDataToTable() {
         SingleTone.letters.add("Res");
         for (String headCell : SingleTone.letters) {
@@ -58,11 +85,17 @@ public class TruthTableAnd_kMapActivity extends AppCompatActivity {
         tableData.setLayoutManager(linearLayoutManager);
         tableData.setAdapter(adapter);
 
+        NumColumnAdapter numColumnAdapter=new NumColumnAdapter(this);
+        LinearLayoutManager linearLayoutManager1=new LinearLayoutManager(this);
+        numColumn.setLayoutManager(linearLayoutManager1);
+        numColumn.setAdapter(numColumnAdapter);
+
     }
 
     private void intializeDate() {
         tableData = findViewById(R.id.tableData);
         header = findViewById(R.id.header);
+        numColumn=findViewById(R.id.numColumn);
     }
 
     @Override
