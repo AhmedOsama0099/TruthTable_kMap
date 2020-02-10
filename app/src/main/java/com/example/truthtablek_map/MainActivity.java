@@ -1,6 +1,9 @@
 package com.example.truthtablek_map;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -13,6 +16,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 
+
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
@@ -22,6 +26,7 @@ import java.util.Stack;
 
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
+    private static boolean pressedGenerateBefore=false;
     EditText formula;
     Button not, and, or, xor, generate;
     String back = "";
@@ -34,6 +39,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+     
         //Toast.makeText(this, Integer.toBinaryString(5)+"", Toast.LENGTH_SHORT).show();
         formula = findViewById(R.id.Formula);
         not = findViewById(R.id.btn_not);
@@ -247,12 +253,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         Stack<Boolean> res = new Stack<>();
         SingleTone.setLetters(letters);
         int lastNumber = (int) Math.pow(2, letters.size());
-        ArrayList<String> DecNumbers = new ArrayList<>();
         ArrayList<String> raw;
         SingleTone.setTableData();
         for (int i = 0; i < lastNumber; i++) {
             raw = new ArrayList<>();
-            DecNumbers.add(String.valueOf(i));
             Boolean[] binaryRaw = new Boolean[letters.size()];
             Arrays.fill(binaryRaw, Boolean.FALSE);
             int fromEndToStart = binaryRaw.length - 1;
@@ -322,9 +326,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             SingleTone.tableData.add(raw);
             res.pop();
         }
-        SingleTone.setNum(DecNumbers);
         Intent intent = new Intent(MainActivity.this, TruthTableAnd_kMapActivity.class);
         startActivity(intent);
+        pressedGenerateBefore=false;
     }
 
     @Override
@@ -347,25 +351,24 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             formula.setText(formula.getText().insert(start, "^"));
             formula.setSelection(start + 1);
         } else if (v.getId() == generate.getId()) {
-            if (!formula.getText().toString().isEmpty()) {
-                posfix.clear();
-                letters_and_operators.clear();
-                letters.clear();
-                mProgress.setMessage("Generating");
-                mProgress.show();
-                letterSplitter_withRemovingDuplicates(formula.getText().toString());
 
-                if (valid(letters_and_operators)) {
-                    infixToprefix(letters_and_operators);
-                    rawResult();
-                } else {
-                    formula.setError("Wrong Syntax!");
-                }
-                mProgress.dismiss();
-            } else
-                formula.setError("Empty!");
+            if(!pressedGenerateBefore){
+                pressedGenerateBefore=true;
+                if (!formula.getText().toString().isEmpty()) {
+                    posfix.clear();
+                    letters_and_operators.clear();
+                    letters.clear();
+                    letterSplitter_withRemovingDuplicates(formula.getText().toString());
+
+                    if (valid(letters_and_operators)) {
+                        infixToprefix(letters_and_operators);
+                        rawResult();
+                    } else {
+                        formula.setError("Wrong Syntax!");
+                    }
+                } else
+                    formula.setError("Empty!");
+            }
         }
     }
-
-
 }

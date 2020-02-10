@@ -5,15 +5,8 @@ import java.util.ArrayList;
 public class SingleTone {
     public static ArrayList<String>letters;
     public static ArrayList<ArrayList<String>>tableData;
-    public static ArrayList<String>num;
 
-    public static ArrayList<String> getNum() {
-        return num;
-    }
 
-    public static void setNum(ArrayList<String> num) {
-        SingleTone.num = num;
-    }
 
     SingleTone(){}
 

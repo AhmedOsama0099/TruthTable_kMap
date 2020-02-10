@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:gravity="center_horizontal"
     android:orientation="vertical"
-    tools:context=".TruthTableAnd_kMapActivity"
+    tools:context=".TruthTableAnd_kMapActivity" android:layout_marginTop="10dp"
     >
 
     <LinearLayout
@@ -18,11 +18,10 @@
         app:layout_constraintEnd_toStartOf="@+id/headerScroller"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/headerScroller"
-        app:layout_constraintVertical_bias="0.0"
         >
 
         <TextView
-            android:layout_width="70dp"
+            android:layout_width="80dp"
             android:layout_height="wrap_content"
             android:background="@drawable/table_header_cell_bg"
             android:text="Num"
@@ -31,7 +30,7 @@
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/numColumn"
-            android:layout_width="70dp"
+            android:layout_width="80dp"
             android:layout_height="wrap_content" />
     </LinearLayout>
 
